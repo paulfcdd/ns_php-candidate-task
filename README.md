@@ -1,6 +1,6 @@
 # Cycling in Copenhagen
 Copenhagen is known for being a [cyclist city](https://www.weforum.org/agenda/2018/10/what-makes-copenhagen-the-worlds-most-bike-friendly-city/)!
-And, since Copenhagen has a great bike infrastructure, we have written a script that helps people find the closest bike-sharing station from any location.You are given a script that should:
+And, since Copenhagen has a great bike infrastructure, we have written a script that helps people find the closest bike-sharing station from any location. You are given a script that should:
 * fetch and process data from [CityBike API](http://api.citybik.es/v2/) for Copenhagen city;
 * parse a CSV file in which we have bikers in random locations. An example file (bikers.csv) is attached;
 * calculate the closest bike station and print it out to screen.  
@@ -47,7 +47,7 @@ Things to look out for when refactoring (hard requirements):
 * Validation of incoming data — errors should be printed to screen instead of fatal PHP errors;
 * If you store the task on a public domain, don’t mention any NordSecurity trademarks (e.g. NordLocker, NordVPN, NordPass) in the task. Doing so can negatively affect Google search results;
 * PSR Coding standards;
-* The task should be implemented with PHP 7.4 or higher;
+* The task should be implemented with PHP 8.0 or higher;
 * Ability to reuse/replace data with ease. For example, changing the bike group format from CSV to XML;
 * Double-check for any business logic or implementation flaws.  
 
