@@ -1,42 +1,47 @@
-# Cycling in Copenhagen
-Copenhagen is known for being a [cyclist city](https://www.weforum.org/agenda/2018/10/what-makes-copenhagen-the-worlds-most-bike-friendly-city/)!
-And, since Copenhagen has a great bike infrastructure, we have written a script that helps people find the closest bike-sharing station from any location. You are given a script that should:
-* fetch and process data from [CityBike API](http://api.citybik.es/v2/) for Copenhagen city;
+# Bike-sharing application
+One key area that NordSecurity as a company is actively paying attention to is employee's [physical well-being](https://nordsecurity.com/blog/in-house-training-keeps-our-team-motivated)!
+So we here at NordLocker have written a script that helps people find the closest bike-sharing station from any location. You are given a script that should:
+* fetch and process data from [CityBike API](http://api.citybik.es/v2/) for any city that you choose (maybe it can be yours if possible!);
 * parse a CSV file in which we have bikers in random locations. An example file (bikers.csv) is attached;
 * calculate the closest bike station and print it out to screen.  
 
-However, the script is poorly written and you’ll need to fix it so that it:
+However, the script is poorly written and you will need to fix it so that it:
 * Fetches and processes the following data:
-  * Station address
-  * Station coordinates (latitude and longitude)
-  * The number of free bikes available at the station
+  * Stations names
+  * Stations coordinates (latitude and longitude)
+  * The number of free bikes available at the stations
 * Parses a CSV file that contains:
   * The count of bikers in need of a bike;
   * The coordinates (latitude and longitude) at which the bikes are located.  Example file structure:
 ```
 count, latitude, longitude
-2, 55.67766, 12.59747
-1, 55.68186, 12.56989
-0, 55.64675, 12.54854
-4, 55.70909881591797, 12.603099822998047
+2, 45.69233, 9.65931
+1, 45.69654, 9.65897
+0, 45.67831, 9.67516
+4, 45.716909, 9.716649
 ```
-* Displays the closest bike station and the bikes available there, like this:
+* This example displays the closest bike station and the bikes available in Bergamo, Italy:
 ```
-distance: 0.00021154609843014
-address: Strandgade 108, København, 1401 Copenhagen
-free_bike_count: 1
+php script.php Bergamo
+
+distance: 0.024340748060035
+name: 19. Palma il Vecchio
+free_bike_count: 0
 biker_count: 2
-distance: 0.0012151525633947
-address: Nørre Voldgade 48, København (DSB), 1358 København K
-free_bike_count: 14
+
+distance: 0.096520693247684
+name: 23. Mazzini
+free_bike_count: 0
 biker_count: 1
-distance: 0.00062542893520177
-address: Thad Jones Vej 4, København, 2450 København SV
-free_bike_count: 16
+
+distance: 0.36324024061141
+name: VIA AMBIVERI
+free_bike_count: 0
 biker_count: 0
-distance: 0
-address: Klubiensvej 22, København, Copenhagen
-free_bike_count: 4
+
+distance: 1.2777018248149
+name: VIA CORRIDONI - MARTINELLA
+free_bike_count: 0
 biker_count: 4
 ```
 The task:

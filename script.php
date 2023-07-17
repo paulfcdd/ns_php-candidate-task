@@ -1,18 +1,31 @@
 <?php
 
-$api_url = "http://api.citybik.es/v2/networks/bycyklen";
+$base_url = "http://api.citybik.es";
+$city = $argv[1];
 
-$b_content = file_get_contents($api_url);
-$response = parse_response($b_content);
+$n_content = file_get_contents($base_url . '/v2/networks');
+$response = parse_response($n_content);
+
+$hrefs = array();
+
+foreach ($response["networks"] as $network) {
+    if ($network["location"]["city"] == $city)
+        $hrefs[] = $network["href"];
+}
 
 $station_info = array();
-foreach ($response["network"]["stations"] as $stat) {
-    array_push($station_info, array(
-        "address" => $stat["extra"]["address"],
-        "latitude" => $stat["latitude"],
-        "longitude" => $stat["longitude"],
-        "free_bikes" => $stat["free_bikes"]
-    ));
+foreach ($hrefs as $href) {
+    $b_content = file_get_contents($base_url . $href);
+    $response = parse_response($b_content);
+
+    foreach ($response["network"]["stations"] as $stat) {
+        array_push($station_info, array(
+            "name" => $stat["name"],
+            "latitude" => $stat["latitude"],
+            "longitude" => $stat["longitude"],
+            "free_bikes" => $stat["free_bikes"]
+        ));
+    }
 }
 $bikers_data = explode("\n", file_get_contents("bikers.csv"));
 $bikers = array();
@@ -33,20 +46,20 @@ $shortest_distances = array();
 
 foreach ($bikers as $biker) {
     $shortest_distance = 9999999999999999;
-    $closest_station_address = '';
+    $closest_station_name = '';
     $free_bike_count = 0;
     $biker_count = 0;
     foreach ($station_info as $station) {
         $distance = getDistance($station["latitude"], $station["longitude"], $biker["latitude"], $biker["longitude"]);
         if ($distance < $shortest_distance) {
             $shortest_distance = $distance;
-            $closest_station_address = $station["address"];
+            $closest_station_name = $station["name"];
             $free_bike_count = $station["free_bikes"];
             $biker_count = $biker["count"];
         }
     }
     $shortest_distances[] = [
-        "address" => $closest_station_address,
+        "name" => $closest_station_name,
         "distance" => $shortest_distance,
         "free_bike_count" => $free_bike_count,
         "biker_count" => $biker_count
@@ -55,7 +68,7 @@ foreach ($bikers as $biker) {
 
 foreach ($shortest_distances as $shortest_distance) {
     echo "distance: " . $shortest_distance["distance"] . PHP_EOL;
-    echo "address: " . $shortest_distance["address"] . PHP_EOL;
+    echo "name: " . $shortest_distance["name"] . PHP_EOL;
     echo "free_bike_count: " . $shortest_distance["free_bike_count"] . PHP_EOL;
     echo "biker_count: " . $shortest_distance["biker_count"] . PHP_EOL;
     echo PHP_EOL;
