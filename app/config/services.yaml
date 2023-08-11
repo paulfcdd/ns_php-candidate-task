@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     city_bike_api_url: 'http://api.citybik.es/v2'
+    bikers_csv_path: '%kernel.project_dir%/bin/bikers.csv'
 
 services:
     # default configuration for services in *this* file

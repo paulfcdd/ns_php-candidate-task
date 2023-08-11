@@ -6,17 +6,23 @@ namespace App\Service\CityBike;
 
 use App\DTO\BikerDTO;
 use App\DTO\StationDTO;
+use App\Service\Parser\ParserFactory;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class DistanceService
 {
     const EARTH_RADIUS = 6371.0;
+    private string $filePath;
 
     public function __construct(
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly ParameterBagInterface $parameterBag,
     )
-    {}
+    {
+        $this->filePath = $this->parameterBag->get('bikers_csv_path');
+    }
 
     public function getClothesStations(array $networkStations): array
     {
@@ -70,26 +76,15 @@ class DistanceService
     private function getBikersData(): array
     {
         $filesystem = new Filesystem();
-        $filePath = __DIR__ . '/../../../bin/bikers.csv';
 
-        if (!$filesystem->exists($filePath)) {
-            throw new \RuntimeException("File not found: {$filePath}");
+        if (!$filesystem->exists($this->filePath)) {
+            throw new \RuntimeException("File not found: {$this->filePath}");
         }
 
-        $bikers_data = explode("\n", file_get_contents($filePath));
-        array_shift($bikers_data);
+        $extension = pathinfo($this->filePath, PATHINFO_EXTENSION);
+        $parser = ParserFactory::create($extension, $this->serializer);
 
-        return array_map(function($row) {
-            $biker_info = explode(',', $row);
-
-            $data = [
-                'count' => $biker_info[0] ?? '',
-                'latitude' => floatval($biker_info[1] ?? 0),
-                'longitude' => floatval($biker_info[2] ?? 0)
-            ];
-
-            return $this->serializer->denormalize($data, BikerDTO::class, null, ['groups' => 'biker']);
-        }, $bikers_data);
+        return $parser->parse($this->filePath);
     }
 
     private function getDistance(float $latitude1, float $longitude1, float $latitude2, float $longitude2): float

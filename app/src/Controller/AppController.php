@@ -63,7 +63,8 @@ class AppController extends AbstractController
         }
 
         return $this->render('app/country.html.twig', [
-            'form' => $cityForm->createView()
+            'form' => $cityForm->createView(),
+            'country' => $country,
         ]);
     }
 
@@ -75,6 +76,8 @@ class AppController extends AbstractController
 
         return $this->render('app/city.html.twig', [
             'data' => $data,
+            'city' => $city,
+            'country' => $country,
         ]);
     }
 }
