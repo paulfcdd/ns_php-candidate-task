@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - db
+    ports:
+      - 80:80
+    networks:
+      - web
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    volumes:
+      - db_volume:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - web
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: mysql
+      MEMORY_LIMIT: -1
+      UPLOAD_LIMIT: 4096M
+    networks:
+      - web
+
+volumes:
+  db_volume:
+
+networks:
+  web:
+    external: false
