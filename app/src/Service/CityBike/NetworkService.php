@@ -22,9 +22,25 @@ class NetworkService
         private readonly SerializerInterface $serializer,
         private readonly NetworkRepository $networkRepository,
         private readonly Connection $connection,
+        private readonly DistanceService $distanceService,
     )
     {
         $this->apiUrl = $this->parameterBag->get('city_bike_api_url');
+    }
+
+    public function getNetworkData(array $networks): array
+    {
+        $stations = [];
+
+        foreach ($networks as $network) {
+            $url = sprintf('%s/%s/%s', $this->apiUrl, 'networks', $network);
+            $response = $this->client->request(Request::METHOD_GET, $url);
+            $responseDecoded = json_decode($response->getContent(), true);
+            $network = $responseDecoded['network'];
+            $stations = array_merge($stations, $network['stations']);
+        }
+
+        return $this->distanceService->getClothesStations($stations);
     }
 
     public function syncNetworks(): void

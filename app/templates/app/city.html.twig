@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 mt-5">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Station name</th>
+                    <th scope="col">Distance</th>
+                    <th scope="col">Free bikes</th>
+                    <th scope="col">Num. of bikers</th>
+                    <th scope="col">Location</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for station in data %}
+                    <tr>
+                        <th scope="row">{{ station.name }}</th>
+                        <td>{{ station.distance }}</td>
+                        <td>{{ station.free_bike_count }}</td>
+                        <td>{{ station.biker_count }}</td>
+                        <td>
+                            <a href="https://maps.google.com/?q={{ station.latitude }},{{ station.longitude }}" target="_blank">
+                                {{ station.latitude }} {{ station.longitude }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
