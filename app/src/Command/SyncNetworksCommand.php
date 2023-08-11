@@ -28,7 +28,12 @@ class SyncNetworksCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $this->cityBikeNetworkService->syncNetworks();
+        try {
+            $this->cityBikeNetworkService->syncNetworks();
+            $io->success('Data was synced');
+        } catch (\Exception $exception) {
+            $io->error($exception->getMessage());
+        }
 
         return Command::SUCCESS;
     }
