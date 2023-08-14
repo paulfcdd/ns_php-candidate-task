@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\CityBike\NetworkService;
+use App\Service\CityBike\SyncNetworkService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,6 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[AsCommand(
     name: 'app:sync-networks',
@@ -18,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class SyncNetworksCommand extends Command
 {
     public function __construct(
-        private readonly NetworkService $cityBikeNetworkService
+        private readonly SyncNetworkService $syncNetworkService
     )
     {
         parent::__construct();
@@ -29,10 +34,12 @@ class SyncNetworksCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         try {
-            $this->cityBikeNetworkService->syncNetworks();
+            $this->syncNetworkService->syncNetworks();
             $io->success('Data was synced');
         } catch (\Exception $exception) {
             $io->error($exception->getMessage());
+        } catch (TransportExceptionInterface $e) {
+            $io->error($e->getMessage());
         }
 
         return Command::SUCCESS;

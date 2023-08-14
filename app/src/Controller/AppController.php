@@ -8,6 +8,7 @@ use App\Entity\Network;
 use App\Form\CitySelectType;
 use App\Form\CountrySelectType;
 use App\Repository\NetworkRepository;
+use App\Service\CityBike\DistanceService;
 use App\Service\CityBike\NetworkService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class AppController extends AbstractController
     public function __construct(
         private readonly NetworkRepository $networkRepository,
         private readonly NetworkService $networkService,
+        private readonly DistanceService $distanceService,
     )
     {
     }
@@ -72,7 +74,8 @@ class AppController extends AbstractController
     public function city(string $country, string $city): Response
     {
         $networks = $this->networkRepository->getNetworkId($country, $city);
-        $data = $this->networkService->getNetworkData($networks);
+        $stations = $this->networkService->getStationByNetwork($networks);
+        $data = $this->distanceService->getClothesStations($stations);
 
         return $this->render('app/city.html.twig', [
             'data' => $data,
